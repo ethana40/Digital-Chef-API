@@ -1,11 +1,9 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS
 import openai
 import os
 import logging
 
 app = Flask(__name__)
-CORS(app)
 
 # Configure logging to print debug messages to the console
 logging.basicConfig(level=logging.DEBUG)
@@ -21,18 +19,16 @@ def ask_openai():
     data = request.json
     prompt = data.get('prompt', 'Tell me a joke')
     try:
-        response = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
-                {"role": "user", "content": prompt}
-            ]
+        response = openai.Completion.create(
+            engine="text-davinci-003",  # Specify the model
+            prompt=prompt,
+            max_tokens=100  # Adjust as needed
         )
 
         # Log the generated response for debugging purposes
-        logging.debug('Generated response: %s', response.choices[0].message['content'])
+        logging.debug('Generated response: %s', response['choices'][0]['text'])
 
-        return jsonify({"response": response.choices[0].message['content']}), 200
+        return jsonify({"response": response['choices'][0]['text']}), 200
     except Exception as e:
         # Log any exceptions that occur during request processing
         logging.error('An error occurred: %s', e)
