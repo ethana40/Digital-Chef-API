@@ -21,8 +21,8 @@ def ask_openai():
     data = request.json
     prompt = data.get('prompt', 'Tell me a joke')
     try:
-        response = openai.Completion.create(
-            engine="text-davinci-003",  # Specify the model
+        response = openai.chat.completions.create(
+            engine="gpt3-turbo",  # Specify the model
             prompt=prompt,
             max_tokens=100  # Adjust as needed
         )
