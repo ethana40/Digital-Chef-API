@@ -19,12 +19,14 @@ def ask_openai():
     logging.debug('Request JSON data: %s', request.json)
 
     data = request.json
-    prompt = data.get('prompt', 'Tell me a joke')
+    prompt = data.get('prompt', 'You are an enthusiastic French patisserie chef.')
     try:
         response = openai.chat.completions.create(
-            engine="gpt3-turbo",  # Specify the model
-            prompt=prompt,
-            max_tokens=100  # Adjust as needed
+            model="gpt-3.5-turbo",  # Specify the model
+            messages=[
+                    {"role": "system", "content": prompt},
+
+                    ]
         )
 
         # Log the generated response for debugging purposes
