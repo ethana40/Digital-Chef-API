@@ -25,16 +25,12 @@ def ask_openai():
             model="gpt-3.5-turbo",  # Specify the model
             messages=[
                     {"role": "system", "content": prompt},
-
                     ]
         )
-
-        # Log the generated response for debugging purposes
-        logging.debug('Generated response: %s', response['choices'][0]['text'])
-
-        return jsonify({"response": response['choices'][0]['text']}), 200
+        generated_text = response.choices[0].message.content
+        logging.debug('Generated response: %s', generated_text)
+        return jsonify({"response": generated_text}), 200
     except Exception as e:
-        # Log any exceptions that occur during request processing
         logging.error('An error occurred: %s', e)
         return jsonify({"error": str(e)}), 500
 
