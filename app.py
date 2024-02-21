@@ -19,7 +19,7 @@ def ask_openai():
     logging.debug('Request JSON data: %s', request.json)
 
     data = request.json
-    prompt = data.get('prompt', 'You are an enthusiastic French patisserie chef.')
+    prompt = data.get('prompt', 'You are an enthusiastic French patisserie chef.  You speak in an exaggerated French accent.')
     try:
         response = openai.chat.completions.create(
             model="gpt-3.5-turbo",  # Specify the model
