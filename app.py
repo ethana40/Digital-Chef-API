@@ -43,15 +43,21 @@ def ask_openai():
 def analyze_image():
     logging.debug('Received POST request to /image endpoint')
     if 'file' not in request.files:
+        logging.debug('No file part in request.')
         return jsonify({"error": "No file part"}), 400
     file = request.files['file']
+    logging.debug('File received: %s, type: %s', file.filename, file.content_type)
     prompt = request.form.get('prompt', "What’s in this image?")
 
     if file.filename == '':
+        logging.debug('Invalid file upload attempt with filename: %s', file.filename)
         return jsonify({"error": "No selected file"}), 400
 
     try:
+        logging.debug('Encoding image file: %s', file.filename)
         base64_image = encode_image(file)
+        logging.debug('Image encoded successfully. Sample: %s...', base64_image[:30])
+        logging.debug('Sending request to OpenAI with prompt: %s', prompt)
         response = openai.ChatCompletion.create(
             model="gpt-4-vision-preview",
             messages=[
