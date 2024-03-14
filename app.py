@@ -19,7 +19,7 @@ def encode_image(image_file):
 # Basic API test endpoint
 @app.route('/test', methods=['POST'])
 def ask_openai():
-    logging.debug('Received POST request to /ask endpoint')
+    logging.debug('Received POST request to /test endpoint')
     logging.debug('Request JSON data: %s', request.json)
 
     data = request.json
