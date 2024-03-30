@@ -42,21 +42,16 @@ def ask_openai():
 @app.route('/image', methods=['POST'])
 def analyze_image():
     logging.debug('Received POST request to /image endpoint')
-    if 'file' not in request.files:
-        logging.debug('No file part in request.')
-        return jsonify({"error": "No file part"}), 400
-    file = request.files['file']
-    logging.debug('File received: %s, type: %s', file.filename, file.content_type)
-    prompt = request.form.get('prompt', "What’s in this image?")
-
-    if file.filename == '':
-        logging.debug('Invalid file upload attempt with filename: %s', file.filename)
-        return jsonify({"error": "No selected file"}), 400
-
+    data = request.json
+    if not data or 'imageBase64' not in data:
+        logging.debug('No imageBase64 in request.')
+        return jsonify({"error": "No imageBase64 provided"}), 400
+    
+    base64_image = data['imageBase64']
+    prompt = data.get('prompt', "What’s in this image?")
+    
+    logging.debug('Received base64 image. Sample: %s...', base64_image[:30])
     try:
-        logging.debug('Encoding image file: %s', file.filename)
-        base64_image = encode_image(file)
-        logging.debug('Image encoded successfully. Sample: %s...', base64_image[:30])
         logging.debug('Sending request to OpenAI with prompt: %s', prompt)
         response = openai.ChatCompletion.create(
             model="gpt-4-vision-preview",
@@ -68,7 +63,7 @@ def analyze_image():
                         {
                             "type": "image",
                             "image": {
-                                "data": f"data:image/jpeg;base64,{base64_image}"
+                                "data": base64_image
                             },
                         },
                     ],
